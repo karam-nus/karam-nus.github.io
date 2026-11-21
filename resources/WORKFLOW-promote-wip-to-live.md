@@ -177,7 +177,7 @@ git push -u origin promote-<repo>
 
 Open a PR, or merge to `main` directly if you're working solo. Pages redeploys via
 `.github/workflows/deploy-pages.yml`; give it a minute, then hard-reload
-`https://karam-nus.github.io/karam-nus/` and confirm the card is there.
+`https://karam-nus.github.io/` and confirm the card is there.
 
 ---
 
