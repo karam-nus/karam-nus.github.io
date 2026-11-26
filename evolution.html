@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolution — Karamjot Singh</title>
+<meta name="description" content="How the guides on this site have changed from version to version: before-and-after screenshots with the model, effort, dates and token usage behind each build.">
+<script>
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || t === 'sepia') document.documentElement.dataset.theme = t;
+  } catch (e) { /* localStorage unavailable — default to light */ }
+</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cstyle%3Epath%7Bstroke:%230E0E0E%7D@media(prefers-color-scheme:dark)%7Bpath%7Bstroke:%23F5F5F5%7D%7D%3C/style%3E%3Cpath d='M33 5Q30 31.5 15.7 54Q40.7 43.7 58.2 23Q32 17 6.3 25Q29.7 35.2 45.8 55' fill='none' stroke-width='6.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* Design tokens: copied from index.html so both pages share one palette and three themes. */
+:root {
+  /* ── type ──
+     --font-script drives the hero line and nothing else. One-line swap.
+     Alternates (change the Google Fonts request in the page head to match):
+       'Great Vibes'  — formal calligraphy, more dramatic; needs ~1.25x the
+                        font-size to match Dancing Script's optical weight.
+       'Caveat'       — looser, more handwritten, reads younger.
+     Always keep `cursive` as the terminal fallback. */
+  --font-script: 'Dancing Script', cursive;
+  --font-sans:   'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:   'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* ── light theme (default) ── */
+  --bg:        #FAF8F5;
+  --surface:   #FAF8F5;
+  --text:      #0E0E0E;
+  --text-2:    #5A564F;
+  --text-3:    #605C55;  /* AA 4.63:1 against the darkest panel surface */
+  --rule:      #DCD6CC;
+  --focus:     #0E0E0E;
+  --bar-bg:    rgba(250,248,245,.8);
+
+  /* ── card palette (identical in both themes, by design) ── */
+  --c-mint:#C3E8C9;        --t-mint:#0F1A11;
+  --c-teal:#A8DED2;        --t-teal:#06201A;
+  --c-sky:#B8E4F0;         --t-sky:#0C1A1F;
+  --c-periwinkle:#C9C6F9;  --t-periwinkle:#12102A;
+  --c-pink:#F6BFE9;        --t-pink:#20101C;
+  --c-salmon:#F3BCAF;      --t-salmon:#21100C;
+  --c-peach:#F6CFB2;       --t-peach:#20140A;
+  --c-sand:#EDD9AE;        --t-sand:#1E1808;
+  --c-butter:#F0E5A6;      --t-butter:#1E1A04;
+  /* the single near-black anchor card */
+  --c-ink:#0E0E0E;         --t-ink:#F5F5F5;
+
+  --ink-border: transparent;
+
+  /* How much of a card's colour is mixed into its expanded panel. Light and
+     dark need different amounts: mixing a pastel into a pale page darkens it,
+     but mixing the same pastel into a near-black page lightens it. */
+  --panel-mix: 34%;
+  /* The ink card is too dark to tint a panel with, so its panel uses this
+     neutral instead. */
+  --c-ink-panel: #9B9B97;
+
+  /* ── work-in-progress card surface ──
+     --wip-glass is the lens; --wip-surface is the opaque fallback used when
+     backdrop-filter is unavailable or the user has asked for less
+     transparency. The gradient's 0.62 floor is the AA contrast limit against
+     the darkest part of the banner — see the note above .card-wip. */
+  --wip-glass: linear-gradient(148deg,
+                 rgba(255,255,255,.72) 0%,
+                 rgba(255,255,255,.64) 46%,
+                 rgba(255,255,255,.62) 100%);
+  --wip-glass-edge: rgba(255,255,255,.58);
+  --wip-surface: #E9E9E7;
+  --wip-text:    #33332F;
+
+  /* dotted paper grid */
+  --dot:    #CBC3B4;
+  --dot-hi: #948A79;
+
+  /* scrim over the floral art behind the About copy */
+  --about-bg:     rgba(241,238,232,.76);
+  --about-border: rgba(14,14,14,.09);
+  --about-art:    1;
+
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+/* ── sepia: warm golden paper. Card colours are unchanged, as in dark.
+      Every token is pulled toward yellow, including the dots and the About
+      glass, so nothing reads as a grey patch sitting on warm stock. ── */
+html[data-theme="sepia"] {
+  --bg:      #F9EBBE;
+  --surface: #F9EBBE;
+  --text:    #33281A;
+  --text-2:  #67552F;
+  --text-3:  #655336;    /* AA 4.64:1 against the darkest panel surface */
+  --rule:    #E6D296;
+  --focus:   #33281A;
+  --bar-bg:  rgba(249,235,190,.8);
+
+  --dot:    #DCC183;
+  --dot-hi: #AE9048;
+
+  --about-bg:     rgba(252,242,206,.76);
+  --about-border: rgba(51,40,26,.11);
+  --about-art:    1;
+
+  --c-ink-panel: #A2998A;
+}
+
+html[data-theme="dark"] {
+  --bg:      #0C0C0E;
+  --surface: #0C0C0E;
+  --text:    #EDEDED;
+  --text-2:  #A8A29A;
+  --text-3:  #A5A098;    /* AA 4.63:1 against the darkest panel surface */
+  --rule:    #2A2A2E;
+  --focus:   #F5F5F5;
+  --bar-bg:  rgba(12,12,14,.8);
+
+  /* Only the ink card inverts — a near-black block on a near-black page
+     would otherwise vanish. Everything else stays fully saturated. */
+  --c-ink: #1A1A1E;
+  --ink-border: #333333;
+  --panel-mix: 20%;
+  --c-ink-panel: #4A4A50;
+
+  /* the gradient banner is bright in both themes, so the cards on it stay light */
+  --wip-surface: #E9E9E7;
+  --wip-text:    #33332F;
+
+  --dot:    #2E2E38;
+  --dot-hi: #55555F;
+
+  --about-bg:     rgba(26,26,31,.72);
+  --about-border: rgba(255,255,255,.10);
+  --about-art:    .34;   /* the bloom is a hint on a dark page, not a picture */
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font-sans);
+  font-size: 16px; line-height: 1.5; min-height: 100vh; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.dots {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle at center, var(--dot) 1.9px, transparent 2px);
+  background-size: 26px 26px;
+}
+main, footer.wrap { position: relative; z-index: 1; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+/* top bar — same structure as the home page */
+.topbar { position: sticky; top: 0; z-index: 50; background: var(--bar-bg); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.topbar-inner { max-width: 1200px; margin: 0 auto; padding: 12px max(24px, env(safe-area-inset-right)) 12px max(24px, env(safe-area-inset-left)); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; color: inherit; }
+.brand-mark { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--text); display: grid; place-items: center; }
+.brand-mark svg { width: 19px; height: 19px; display: block; }
+.brand-mark path { stroke: var(--bg); }
+.topbar-name { font-size: 15px; font-weight: 500; color: var(--text); white-space: nowrap; }
+.topbar-right { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.topbar-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.topbar-links a { font-size: 14px; color: var(--text-2); text-decoration: none; transition: color .18s var(--ease); white-space: nowrap; }
+.topbar-links a:hover, .topbar-links a[aria-current] { color: var(--text); }
+.theme-switch { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; flex-shrink: 0; }
+.theme-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.theme-switch label { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; color: var(--text-2); transition: background .2s var(--ease), color .2s var(--ease); }
+.theme-switch label svg { width: 15px; height: 15px; display: block; }
+.theme-switch label:hover { color: var(--text); }
+.theme-switch input:checked + label { background: var(--text); color: var(--bg); }
+.theme-switch input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* hero */
+.hero { text-align: center; padding: clamp(56px, 11vh, 140px) 0 clamp(40px, 7vh, 90px); }
+.hero-title { font-family: var(--font-script); font-weight: 700; font-size: clamp(60px, 11vw, 132px); line-height: 1.05; padding-bottom: .12em; }
+.hero-sub { font-size: 18px; color: var(--text-2); max-width: 60ch; margin: 12px auto 0; }
+
+/* one site */
+.site { padding: 0 0 72px; }
+.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 22px; }
+.site-title { font-size: clamp(25px, 3vw, 34px); font-weight: 600; letter-spacing: -.025em; line-height: 1.05; display: flex; align-items: center; gap: 12px; }
+.site-swatch { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.site-link { font-size: 14px; color: var(--text-2); text-decoration: none; white-space: nowrap; }
+.site-link:hover { color: var(--text); }
+
+.cmp-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.views { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; }
+.views button { font: 500 13px var(--font-sans); color: var(--text-2); background: none; border: 0; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.views button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+
+/* before/after comparison: B underneath, A on top clipped to the left of the divider */
+.cmp { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; border: 1px solid var(--rule); background: var(--surface); box-shadow: 0 18px 50px -28px rgba(0,0,0,.45); user-select: none; --pos: 50%; }
+.cmp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+.cmp .cmp-a { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.cmp-line { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: var(--text); pointer-events: none; }
+.cmp-knob { position: absolute; top: 50%; left: var(--pos); width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: var(--text); color: var(--bg); display: grid; place-items: center; font: 600 13px var(--font-mono); pointer-events: none; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.cmp-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.cmp-range:focus-visible ~ .cmp-knob { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cmp-tag { position: absolute; top: 12px; padding: 5px 10px; border-radius: 999px; font: 500 12px var(--font-mono); background: var(--bar-bg); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); border: 1px solid var(--rule); pointer-events: none; }
+.cmp-tag.a { left: 12px; } .cmp-tag.b { right: 12px; }
+.cmp-hint { font-size: 13px; color: var(--text-3); margin-top: 10px; }
+
+/* details */
+.details { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.ver { border: 1px solid var(--rule); border-radius: 14px; padding: 18px 20px 20px; background: color-mix(in srgb, var(--surface) 88%, transparent); }
+.ver-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.ver-badge { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 14px var(--font-mono); background: var(--text); color: var(--bg); flex-shrink: 0; }
+.ver.b .ver-badge { background: var(--swatch); color: var(--swatch-text); }
+.ver-title { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+.ver dl { display: grid; grid-template-columns: 8.5em 1fr; gap: 7px 14px; font-size: 14.5px; }
+.ver dt { font: 500 12px/1.9 var(--font-mono); color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; }
+.ver dd { color: var(--text); }
+.ver dd.muted { color: var(--text-3); }
+.ver ul { margin: 14px 0 0 1.1em; font-size: 14.5px; color: var(--text-2); }
+.ver li { margin: 3px 0; }
+
+.method { border-top: 1px solid var(--rule); padding: 26px 0 8px; font-size: 14px; color: var(--text-2); max-width: 80ch; }
+.method p + p { margin-top: .7em; }
+.footer { border-top: 1px solid var(--rule); padding: 22px 0 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.footer-note { font-size: 14px; color: var(--text-2); }
+.footer-note a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .18s var(--ease), border-color .18s var(--ease); }
+.footer-note a:hover, .footer-note a[aria-current] { color: var(--text); border-color: currentColor; }
+
+@media (max-width: 760px) {
+  .details { grid-template-columns: 1fr; }
+  .cmp { aspect-ratio: 4 / 3; }
+  .ver dl { grid-template-columns: 7.2em 1fr; }
+  .topbar-links { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="dots" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./" aria-label="Back to the home page">
+      <span class="brand-mark">
+        <svg viewBox="0 0 64 64" fill="none" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M33 5Q30 31.5 15.7 54Q40.7 43.7 58.2 23Q32 17 6.3 25Q29.7 35.2 45.8 55"/>
+        </svg>
+      </span>
+      <span class="topbar-name">Karamjot Singh</span>
+    </a>
+    <div class="topbar-right">
+      <nav class="topbar-links" aria-label="Site">
+        <a href="./">All guides</a>
+        <a href="https://github.com/karam-nus" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <div class="theme-switch" role="radiogroup" aria-label="Colour theme">
+        <input type="radio" name="theme" id="th-light" value="light">
+        <label for="th-light" title="Light"><span class="sr-only">Light</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg></label>
+        <input type="radio" name="theme" id="th-sepia" value="sepia">
+        <label for="th-sepia" title="Sepia"><span class="sr-only">Sepia</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8a8.2 8.2 0 010 16.4z" fill="currentColor" stroke="none"/></svg></label>
+        <input type="radio" name="theme" id="th-dark" value="dark">
+        <label for="th-dark" title="Dark"><span class="sr-only">Dark</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.8 8.8 0 019.4 3.5a8.8 8.8 0 1011.1 11.1z"/></svg></label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <h1 class="hero-title">Evolution</h1>
+    <p class="hero-sub">This site and the guides on it get rebuilt from time to time. Drag the divider to see one version against another &mdash; and below each pair, the model, the effort setting and the tokens that went into it.</p>
+  </section>
+
+  <div class="wrap" id="sites"></div>
+
+  <div class="wrap">
+    <section class="method" aria-label="How these numbers were collected">
+      <p><strong>How the details were collected.</strong> Screenshots are rendered from each version&rsquo;s own source (built from the commit that version ended on) at 1440&times;900 in the site&rsquo;s default light theme. Dates, commit counts and line changes come from the repositories&rsquo; git history. Model names come from the build session&rsquo;s log or the commits&rsquo; co-author lines; where neither exists, from the author&rsquo;s notes. Effort is the setting chosen for the build.</p>
+      <p>Token usage counts every model call in the build session: <em>output</em> is text and code the model wrote; <em>input</em> is everything it read, most of which is re-read context served from the prompt cache. Builds whose sessions were not logged show &ldquo;not recorded&rdquo; rather than an estimate.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap">
+  <div class="footer">
+    <span class="footer-note">&copy; Karamjot Singh &middot; 2026 &middot; <a href="./evolution.html" aria-current="page">Evolution</a></span>
+    <span class="footer-note"><a href="./">&larr; All guides</a></span>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   DATA — one entry per guide, one object per version (oldest first).
+   To record a new build: add screenshots to evolution/, append a version
+   object, and add its image to each view under the version's tag.
+   `compare` picks the default pair (indexes into `versions`); with more
+   than two versions the reader can choose the pair. `null` renders as
+   "not recorded".
+   ═══════════════════════════════════════════════════════════════════════ */
+const SITES = [
+  {
+    "id": "home",
+    "name": "This site",
+    "color": "periwinkle",
+    "url": "https://karam-nus.github.io/",
+    "compare": [
+      0,
+      2
+    ],
+    "views": [
+      {
+        "label": "First screen",
+        "img": {
+          "A": "evolution/site-a-top.webp",
+          "B": "evolution/site-b-top.webp",
+          "C": "evolution/site-c-top.webp"
+        }
+      },
+      {
+        "label": "Further down",
+        "img": {
+          "A": "evolution/site-a-down.webp",
+          "B": "evolution/site-b-down.webp",
+          "C": "evolution/site-c-down.webp"
+        }
+      }
+    ],
+    "versions": [
+      {
+        "tag": "A",
+        "title": "Minimal dark",
+        "short": "May 2026",
+        "model": "Claude Opus 5",
+        "effort": "High",
+        "tool": "GitHub Copilot coding agent, in pull requests",
+        "dates": "19–23 May 2026",
+        "commits": "19",
+        "change": "first build: 3 files · 1,411 lines",
+        "tokens": null,
+        "notes": [
+          "Near-black page, monospace type, a red accent",
+          "One knowledge-base panel with tabs per guide and plain chapter lists",
+          "A light/beige toggle",
+          "A Three.js particle background was wired in, but it pointed at a file three.js no longer ships, so it never appeared"
+        ]
+      },
+      {
+        "tag": "B",
+        "title": "Tile redesign",
+        "short": "Aug 2026",
+        "model": null,
+        "effort": null,
+        "tool": null,
+        "dates": "1 August 2026",
+        "commits": "3",
+        "change": "2 files · +1,923 / −687 lines",
+        "tokens": null,
+        "notes": [
+          "“Let’s Learn!” script hero on a dotted paper grid",
+          "Colour-coded tiles per guide, each opening its own chapter index",
+          "Live and in-progress sections; light, sepia and dark themes",
+          "Built and deployed from its own branch — main kept the dark design until November"
+        ]
+      },
+      {
+        "tag": "C",
+        "title": "Current",
+        "short": "Nov 2026",
+        "model": "Claude Opus 5.5",
+        "effort": null,
+        "tool": "Claude Code",
+        "dates": "20–26 November 2026",
+        "commits": "6",
+        "change": "12 files · +1,384 / −195 lines",
+        "tokens": null,
+        "notes": [
+          "Tile redesign restored to main (its branch had been deleted)",
+          "Vectorization and Programming moved from In Progress to live; Object Detection added (13 → 16 live guides)",
+          "Language Modelling index updated to the guide’s November structure",
+          "This Evolution page, linked from the footer (26 November)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "language-modelling",
+    "name": "Language Modelling",
+    "color": "mint",
+    "url": "https://karam-nus.github.io/language-modelling/",
+    "views": [
+      {
+        "label": "Home",
+        "img": {
+          "A": "evolution/lm-home-a.webp",
+          "B": "evolution/lm-home-b.webp"
+        }
+      },
+      {
+        "label": "Chapter 5",
+        "img": {
+          "A": "evolution/lm-ch-a.webp",
+          "B": "evolution/lm-ch-b.webp"
+        }
+      }
+    ],
+    "versions": [
+      {
+        "tag": "A",
+        "title": "Original guide",
+        "short": "Apr 2026",
+        "model": "Claude Opus 5",
+        "effort": "High",
+        "tool": "GitHub Copilot coding agent, in pull requests",
+        "dates": "9–15 April 2026",
+        "commits": "18",
+        "change": "first build: 66 files · 16,222 lines",
+        "tokens": null,
+        "notes": [
+          "38 chapters and 3 appendices",
+          "Dark documentation theme with sidebar and on-page contents",
+          "HTML diagrams and 11 SVG figures",
+          "No interactive elements"
+        ]
+      },
+      {
+        "tag": "B",
+        "title": "Modernised guide",
+        "short": "Nov 2026",
+        "model": "Claude Opus 5.5",
+        "effort": "Extra",
+        "tool": "Claude Code (cloud session)",
+        "dates": "25–26 November 2026",
+        "commits": "43",
+        "change": "64 files · +11,678 / −6,304 lines",
+        "tokens": "0.89 M output · 181 M input (99% from the prompt cache)",
+        "notes": [
+          "Every chapter and appendix audited and brought to November 2026",
+          "\"Latent Press\" design: paper and night themes, residual-stream navigation, ⌘K search",
+          "26 interactive labs, checked by 142 automated tests",
+          "Step-through figures for attention and distributed training",
+          "New deep dive on looped transformers; Chapter 26 rewritten",
+          "Links to the companion guides"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chips",
+    "name": "Chips",
+    "color": "sand",
+    "url": "https://karam-nus.github.io/chips/",
+    "views": [
+      {
+        "label": "Home",
+        "img": {
+          "A": "evolution/chips-home-a.webp",
+          "B": "evolution/chips-home-b.webp"
+        }
+      },
+      {
+        "label": "Chapter 15",
+        "img": {
+          "A": "evolution/chips-ch-a.webp",
+          "B": "evolution/chips-ch-b.webp"
+        }
+      }
+    ],
+    "versions": [
+      {
+        "tag": "A",
+        "title": "Original guide",
+        "short": "May 2026",
+        "model": "Claude Opus 5",
+        "effort": "High",
+        "tool": null,
+        "dates": "9 April – 31 May 2026",
+        "commits": "3",
+        "change": "first build: 50 files · 21,606 lines",
+        "tokens": null,
+        "notes": [
+          "35 chapters and 8 appendices",
+          "Green-accent dark documentation theme",
+          "HTML diagrams; no interactive elements"
+        ]
+      },
+      {
+        "tag": "B",
+        "title": "Modernised guide",
+        "short": "Nov 2026",
+        "model": "Claude Opus 5.5",
+        "effort": null,
+        "tool": "Claude Code",
+        "dates": "20–22 November 2026",
+        "commits": "47",
+        "change": "60 files · +7,034 / −1,361 lines",
+        "tokens": null,
+        "notes": [
+          "Copper-accent theme with part navigation, chapter eyebrows and pager",
+          "8 interactive labs tested in Node, and an atlas of 26 accelerators with sourced data",
+          "Generated flowcharts and figures",
+          "Chapters and appendices corrected and brought to 2026"
+        ]
+      }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════════ rendering ═════ */
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function compare(site, view, a, b) {
+  const box = el('div', 'cmp');
+  box.setAttribute('role', 'group');
+  box.setAttribute('aria-label', site.name + ' — ' + view.label + ': version ' + a.tag + ' against version ' + b.tag);
+  const imgB = el('img', 'cmp-b'); imgB.src = view.img[b.tag]; imgB.alt = site.name + ', version ' + b.tag + ' (' + b.dates + '), ' + view.label.toLowerCase(); imgB.loading = 'lazy';
+  const imgA = el('img', 'cmp-a'); imgA.src = view.img[a.tag]; imgA.alt = site.name + ', version ' + a.tag + ' (' + a.dates + '), ' + view.label.toLowerCase(); imgA.loading = 'lazy';
+  const range = el('input', 'cmp-range'); range.type = 'range'; range.min = 0; range.max = 100; range.value = 50;
+  range.setAttribute('aria-label', 'Divider position: left shows version ' + a.tag + ', right shows version ' + b.tag);
+  range.addEventListener('input', () => box.style.setProperty('--pos', range.value + '%'));
+  box.append(imgB, imgA, el('div', 'cmp-line'), range, el('div', 'cmp-knob', '⇔'), el('span', 'cmp-tag a', esc(a.tag + ' · ' + a.short)), el('span', 'cmp-tag b', esc(b.tag + ' · ' + b.short)));
+  return box;
+}
+
+function details(site, v, isLatest) {
+  const card = el('article', 'ver' + (isLatest ? ' b' : ''));
+  card.style.setProperty('--swatch', 'var(--c-' + site.color + ')');
+  card.style.setProperty('--swatch-text', 'var(--t-' + site.color + ')');
+  card.append(el('div', 'ver-head', '<span class="ver-badge">' + esc(v.tag) + '</span><span class="ver-title">' + esc(v.title) + '</span>'));
+  const dl = el('dl');
+  [['Model', v.model], ['Effort', v.effort], ['Built with', v.tool], ['Dates', v.dates], ['Commits', v.commits], ['Change', v.change], ['Tokens', v.tokens]].forEach(([k, val]) => {
+    dl.append(el('dt', '', esc(k)));
+    dl.append(el('dd', val === null ? 'muted' : '', val === null ? 'not recorded' : esc(val)));
+  });
+  card.append(dl);
+  if (v.notes && v.notes.length) { const ul = el('ul'); v.notes.forEach(n => ul.append(el('li', '', esc(n)))); card.append(ul); }
+  return card;
+}
+
+function renderSite(site) {
+  const sec = el('section', 'site'); sec.id = site.id;
+  const head = el('div', 'site-head');
+  head.append(el('h2', 'site-title', '<span class="site-swatch" style="background:var(--c-' + site.color + ')"></span>' + esc(site.name)));
+  const link = el('a', 'site-link', 'Open the current site ↗'); link.href = site.url; link.target = '_blank'; link.rel = 'noopener';
+  head.append(link); sec.append(head);
+
+  const vs = site.versions, pair = site.compare || [vs.length - 2, vs.length - 1];
+  let a = vs[pair[0]], b = vs[pair[1]], view = site.views[0];
+  const stage = el('div'), hint = el('p', 'cmp-hint');
+  const draw = () => {
+    stage.replaceChildren(compare(site, view, a, b));
+    hint.textContent = 'Drag across the screenshot (or use the arrow keys) — left of the line is version ' + a.tag + ', right is version ' + b.tag + '.';
+  };
+  const bar = el('div', 'cmp-bar');
+  const tabs = el('div', 'views'); tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Page to compare');
+  site.views.forEach((v, i) => {
+    const btn = el('button', '', esc(v.label)); btn.type = 'button'; btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    btn.addEventListener('click', () => { tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false')); btn.setAttribute('aria-pressed', 'true'); view = v; draw(); });
+    tabs.append(btn);
+  });
+  bar.append(tabs);
+  if (vs.length > 2) {                    // choose which two versions to compare
+    const pairs = el('div', 'views'); pairs.setAttribute('role', 'group'); pairs.setAttribute('aria-label', 'Versions to compare');
+    const options = [];
+    for (let i = 0; i < vs.length; i++) for (let j = i + 1; j < vs.length; j++) options.push([i, j]);
+    options.forEach(([i, j]) => {
+      const on = i === pair[0] && j === pair[1];
+      const btn = el('button', '', esc(vs[i].tag + ' → ' + vs[j].tag)); btn.type = 'button'; btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.title = vs[i].title + ' (' + vs[i].short + ') against ' + vs[j].title + ' (' + vs[j].short + ')';
+      btn.addEventListener('click', () => { pairs.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false')); btn.setAttribute('aria-pressed', 'true'); a = vs[i]; b = vs[j]; draw(); });
+      pairs.append(btn);
+    });
+    bar.append(pairs);
+  }
+  draw();
+  sec.append(bar, stage, hint);
+
+  const grid = el('div', 'details');
+  vs.forEach((v, i) => grid.append(details(site, v, i === vs.length - 1)));
+  sec.append(grid);
+  return sec;
+}
+
+document.getElementById('sites').append(...SITES.map(renderSite));
+
+/* ═══════════════════════════════════════════════════════ theme switch ══
+   Same storage key and values as the home page, so the choice carries over. */
+(function () {
+  const html = document.documentElement;
+  const apply = theme => { if (theme === 'light') delete html.dataset.theme; else html.dataset.theme = theme; };
+  let stored = 'light';
+  try { stored = localStorage.getItem('theme') || 'light'; } catch (e) { /* no-op */ }
+  document.querySelectorAll('.theme-switch input').forEach(i => {
+    if (i.value === stored) i.checked = true;
+    i.addEventListener('change', () => { apply(i.value); try { localStorage.setItem('theme', i.value); } catch (e) { /* no-op */ } });
+  });
+})();
+</script>
+</body>
+</html>
