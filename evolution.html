@@ -221,8 +221,6 @@ main, footer.wrap { position: relative; z-index: 1; }
 .ver ul { margin: 14px 0 0 1.1em; font-size: 14.5px; color: var(--text-2); }
 .ver li { margin: 3px 0; }
 
-.method { border-top: 1px solid var(--rule); padding: 26px 0 8px; font-size: 14px; color: var(--text-2); max-width: 80ch; }
-.method p + p { margin-top: .7em; }
 .footer { border-top: 1px solid var(--rule); padding: 22px 0 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .footer-note { font-size: 14px; color: var(--text-2); }
 .footer-note a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .18s var(--ease), border-color .18s var(--ease); }
@@ -279,17 +277,11 @@ main, footer.wrap { position: relative; z-index: 1; }
 
   <div class="wrap" id="sites"></div>
 
-  <div class="wrap">
-    <section class="method" aria-label="How these numbers were collected">
-      <p><strong>How the details were collected.</strong> Screenshots are rendered from each version&rsquo;s own source (built from the commit that version ended on) at 1440&times;900 in the site&rsquo;s default light theme. Dates, commit counts and line changes come from the repositories&rsquo; git history. Model names come from the build session&rsquo;s log or the commits&rsquo; co-author lines; where neither exists, from the author&rsquo;s notes. Effort is the setting chosen for the build.</p>
-      <p>Token usage counts every model call in the build session: <em>output</em> is text and code the model wrote; <em>input</em> is everything it read, most of which is re-read context served from the prompt cache. Builds whose sessions were not logged show &ldquo;not recorded&rdquo; rather than an estimate.</p>
-    </section>
-  </div>
 </main>
 
 <footer class="wrap">
   <div class="footer">
-    <span class="footer-note">&copy; Karamjot Singh &middot; 2026 &middot; <a href="./evolution.html" aria-current="page">Evolution</a></span>
+    <span class="footer-note">&copy; Karamjot Singh &middot; 2026</span>
     <span class="footer-note"><a href="./">&larr; All guides</a></span>
   </div>
 </footer>
@@ -376,8 +368,8 @@ const SITES = [
         "effort": null,
         "tool": "Claude Code",
         "dates": "20–26 November 2026",
-        "commits": "6",
-        "change": "12 files · +1,384 / −195 lines",
+        "commits": "7",
+        "change": "18 files · +1,495 / −195 lines",
         "tokens": null,
         "notes": [
           "Tile redesign restored to main (its branch had been deleted)",
@@ -436,9 +428,9 @@ const SITES = [
         "effort": "Extra",
         "tool": "Claude Code (cloud session)",
         "dates": "25–26 November 2026",
-        "commits": "43",
-        "change": "64 files · +11,678 / −6,304 lines",
-        "tokens": "0.89 M output · 181 M input (99% from the prompt cache)",
+        "commits": "44",
+        "change": "64 files · +11,687 / −6,305 lines",
+        "tokens": "0.90 M output · 193 M input (99% from the prompt cache)",
         "notes": [
           "Every chapter and appendix audited and brought to November 2026",
           "\"Latent Press\" design: paper and night themes, residual-stream navigation, ⌘K search",
