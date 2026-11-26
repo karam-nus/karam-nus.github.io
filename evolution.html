@@ -224,7 +224,8 @@ main, footer.wrap { position: relative; z-index: 1; }
 .method p + p { margin-top: .7em; }
 .footer { border-top: 1px solid var(--rule); padding: 22px 0 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .footer-note { font-size: 14px; color: var(--text-2); }
-.footer a { color: var(--text-2); }
+.footer-note a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .18s var(--ease), border-color .18s var(--ease); }
+.footer-note a:hover, .footer-note a[aria-current] { color: var(--text); border-color: currentColor; }
 
 @media (max-width: 760px) {
   .details { grid-template-columns: 1fr; }
@@ -252,7 +253,6 @@ main, footer.wrap { position: relative; z-index: 1; }
     <div class="topbar-right">
       <nav class="topbar-links" aria-label="Site">
         <a href="./">All guides</a>
-        <a href="./evolution.html" aria-current="page">Evolution</a>
         <a href="https://github.com/karam-nus" target="_blank" rel="noopener">GitHub ↗</a>
       </nav>
       <div class="theme-switch" role="radiogroup" aria-label="Colour theme">
@@ -288,7 +288,7 @@ main, footer.wrap { position: relative; z-index: 1; }
 
 <footer class="wrap">
   <div class="footer">
-    <span class="footer-note">&copy; Karamjot Singh &middot; 2026</span>
+    <span class="footer-note">&copy; Karamjot Singh &middot; 2026 &middot; <a href="./evolution.html" aria-current="page">Evolution</a></span>
     <span class="footer-note"><a href="./">&larr; All guides</a></span>
   </div>
 </footer>
@@ -347,7 +347,7 @@ const SITES = [
         "dates": "25–26 November 2026",
         "commits": "43",
         "change": "64 files · +11,678 / −6,304 lines",
-        "tokens": "0.86 M output · 159 M input (99% from the prompt cache)",
+        "tokens": "0.87 M output · 165 M input (99% from the prompt cache)",
         "notes": [
           "Every chapter and appendix audited and brought to November 2026",
           "\"Latent Press\" design: paper and night themes, residual-stream navigation, ⌘K search",
