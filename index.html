@@ -962,6 +962,7 @@ html[data-theme="dark"] .card.is-open { box-shadow: inset 0 0 0 2px rgba(255,255
     </span>
     <div class="topbar-right">
       <nav class="topbar-links" aria-label="Profiles">
+        <a href="./evolution.html">Evolution</a>
         <a href="https://github.com/karam-nus" target="_blank" rel="noopener">GitHub ↗</a>
         <a href="https://huggingface.co/karamjotsingh" target="_blank" rel="noopener">HuggingFace ↗</a>
         <a href="https://www.linkedin.com/in/karamjotsinghmalik/" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -1062,63 +1063,66 @@ const repos = [
     base:'https://karam-nus.github.io/language-modelling/',
     groups:[
       {name:'Foundations',chs:[
-        {n:'01',t:'Introduction to Language Modelling',u:'01_introduction',d:'text → tokens → tensors → predictions'},
-        {n:'02',t:'Embeddings & Representations',u:'02_embeddings',d:'dense vectors, RoPE, ALiBi, geometry of meaning'},
-        {n:'03',t:'The Transformer',u:'03_the_transformer',d:'complete architecture walkthrough with tensor shapes'},
-        {n:'04',t:'Attention — SDPA & Multi-Head',u:'04_attention_sdpa_and_mha',d:'Q/K/V math, causal masking, Flash Attention'},
+        {n:'01',t:'Introduction',u:'01_introduction',d:'text → tokens → tensors → the next token'},
+        {n:'02',t:'Embeddings & Positional Encodings',u:'02_embeddings',d:'embedding tables, RoPE and its long-context extensions'},
+        {n:'03',t:'The Transformer',u:'03_the_transformer',d:'a modern decoder block with every tensor shape'},
+        {n:'04',t:'Attention: SDPA & Multi-Head',u:'04_attention_sdpa_and_mha',d:'Q/K/V, masking, FlashAttention, sinks and gates'},
       ]},
-      {name:'Attention & Architecture',chs:[
-        {n:'05',t:'Attention Variants — GQA, MQA & MLA',u:'05_attention_gqa_mqa_mla',d:'KV bottleneck, sliding window, tensor shape comparisons'},
-        {n:'06',t:'Decoder-Only Models',u:'06_decoder_only_models',d:'GPT family, LLaMA architecture, open-source landscape'},
-        {n:'07',t:'Encoder & Seq2Seq Models',u:'07_encoder_and_seq2seq_models',d:'BERT, T5, BART — encoder vs decoder vs encoder-decoder'},
-        {n:'08',t:'Multimodal Models',u:'08_multimodal_models',d:'ViT, Whisper, modality fusion, image-to-token pipelines'},
+      {name:'Architectures',chs:[
+        {n:'05',t:'GQA, MQA, MLA & Sparse Attention',u:'05_attention_gqa_mqa_mla',d:'shrinking the KV cache; sparse and hybrid attention'},
+        {n:'06',t:'Decoder-Only Models',u:'06_decoder_only_models',d:'the 2026 model families, open and closed'},
+        {n:'07',t:'Encoders & Seq2Seq',u:'07_encoder_and_seq2seq_models',d:'BERT to ModernBERT, T5, embedding and reranking models'},
+        {n:'08',t:'Multimodal Models',u:'08_multimodal_models',d:'vision encoders, image tokens, audio, native multimodality'},
       ]},
       {name:'Training',chs:[
-        {n:'09',t:'Data for LLMs & VLMs',u:'09_data_for_llms',d:'pre-training, SFT, RLHF, RL data formats & tensor shapes'},
-        {n:'10',t:'Pre-Training at Scale',u:'10_pretraining_at_scale',d:'data curation, training objectives, loss curves'},
-        {n:'11',t:'Optimizers & Loss Functions',u:'11_optimizers_and_loss_functions',d:'AdamW, Adam-mini, Muon, SOAP, DPO loss'},
-        {n:'12',t:'Mid-Training & Continued Pre-Training',u:'12_mid_training',d:'long-context extension, domain adaptation, annealing'},
-        {n:'13',t:'Fine-Tuning & Adaptation',u:'13_finetuning_and_adaptation',d:'SFT, LoRA, QLoRA'},
-        {n:'14',t:'PEFT: LoRA, QLoRA & Variants',u:'14_peft_lora_and_variants',d:'rank decomposition math, DoRA, rsLoRA, VeRA'},
-        {n:'15',t:'Alignment — RLHF & Beyond',u:'15_alignment_rlhf_and_beyond',d:'reward models, PPO, DPO, Constitutional AI'},
+        {n:'09',t:'Data for LLMs & VLMs',u:'09_data_for_llms',d:'every training phase’s data, formats and shapes'},
+        {n:'10',t:'Pre-Training at Scale',u:'10_pretraining_at_scale',d:'objectives, WSD schedules, stability, FP8, compute budgets'},
+        {n:'11',t:'Optimizers & Loss Functions',u:'11_optimizers_and_loss_functions',d:'cross-entropy, preference losses, AdamW, Muon'},
+        {n:'12',t:'Mid-Training',u:'12_mid_training',d:'long context, annealing, domain and reasoning mid-training'},
+        {n:'13',t:'Fine-Tuning & Adaptation',u:'13_finetuning_and_adaptation',d:'SFT, chat templates, memory of full vs LoRA vs QLoRA'},
+        {n:'14',t:'PEFT: LoRA & Variants',u:'14_peft_lora_and_variants',d:'LoRA maths and practice, QLoRA, DoRA'},
+        {n:'15',t:'Alignment: RLHF & Beyond',u:'15_alignment_rlhf_and_beyond',d:'reward models, DPO, RL with verifiable rewards, GRPO'},
       ]},
-      {name:'Inference & Generation',chs:[
-        {n:'16',t:'Inference & Sampling Strategies',u:'16_inference_and_sampling',d:'temperature, top-k/p, speculative decoding, structured output'},
-        {n:'17',t:'KV-Cache — Mechanics & Memory',u:'17_kv_cache_mechanics',d:'tensor shapes through generation, memory calculations'},
-        {n:'18',t:'KV-Cache — Optimization Strategies',u:'18_kv_cache_optimization',d:'PagedAttention, continuous batching, KV quantization'},
+      {name:'Inference',chs:[
+        {n:'16',t:'Inference & Sampling',u:'16_inference_and_sampling',d:'prefill vs decode, sampling, speculative decoding'},
+        {n:'17',t:'KV Cache: Mechanics',u:'17_kv_cache_mechanics',d:'shapes through generation, exact memory for real models'},
+        {n:'18',t:'KV Cache: Optimization',u:'18_kv_cache_optimization',d:'PagedAttention, prefix caching, quantized caches, disaggregation'},
       ]},
-      {name:'Quantization',chs:[
-        {n:'19',t:'Data Types & Numerical Precision',u:'19_data_types_and_precision',d:'FP32→FP4 bit layouts, BF16 vs FP16'},
-        {n:'20',t:'Quantization Fundamentals',u:'20_quantization_fundamentals',d:'affine math, calibration, weight-only vs W+A'},
-        {n:'21',t:'Quantization Techniques — Full Landscape',u:'21_quantization_techniques',d:'GPTQ, AWQ, SmoothQuant, KIVI, BitNet'},
-        {n:'22',t:'Quantization Benchmarks & Selection',u:'22_quantization_benchmarks',d:'perplexity vs bits, throughput benchmarks, GGUF guide'},
-        {n:'23',t:'Knowledge Distillation & QAD',u:'23_knowledge_distillation',d:'feature distillation, fake quantization with STE'},
+      {name:'Precision & Compression',chs:[
+        {n:'19',t:'Data Types & Precision',u:'19_data_types_and_precision',d:'FP32 to FP4, microscaling formats'},
+        {n:'20',t:'Quantization Fundamentals',u:'20_quantization_fundamentals',d:'scales, zero points, granularity, outliers'},
+        {n:'21',t:'Quantization Techniques',u:'21_quantization_techniques',d:'GPTQ, AWQ, SmoothQuant, rotations, QAT, native low-bit'},
+        {n:'22',t:'Choosing a Quantization',u:'22_quantization_benchmarks',d:'quality vs bits, throughput, GGUF, a decision guide'},
+        {n:'23',t:'Distillation & QAD',u:'23_knowledge_distillation',d:'logit, sequence and on-policy distillation'},
       ]},
-      {name:'Hardware & Kernels',chs:[
-        {n:'24',t:'GPU Architecture for ML',u:'24_gpu_architecture',d:'SMs, Tensor Cores, roofline model, A100/H100/B200'},
-        {n:'25',t:'CUDA & Kernel Development',u:'25_cuda_and_kernel_development',d:'Triton kernels, Flash Attention design, fused ops'},
-        {n:'26',t:'Distributed Training',u:'26_distributed_training',d:'DDP, FSDP, DeepSpeed ZeRO, 3D parallelism'},
-        {n:'27',t:'ASICs & Specialized Accelerators',u:'27_asics_and_accelerators',d:'TPUs, Groq, Trainium, Apple Silicon'},
+      {name:'Hardware & Systems',chs:[
+        {n:'24',t:'GPU Architecture',u:'24_gpu_architecture',d:'SMs, tensor cores, memory hierarchy, the roofline'},
+        {n:'25',t:'CUDA & Kernels',u:'25_cuda_and_kernel_development',d:'CUDA, Triton, FlashAttention’s design, fusion'},
+        {n:'26',t:'Distributed Training',u:'26_distributed_training',d:'collectives, FSDP, TP, PP, CP and EP, step by step'},
+        {n:'27',t:'ASICs & Accelerators',u:'27_asics_and_accelerators',d:'TPUs, Trainium, wafer-scale and SRAM machines'},
       ]},
-      {name:'Ecosystem & Tooling',chs:[
-        {n:'28',t:'The Hugging Face Ecosystem',u:'28_huggingface_ecosystem',d:'Hub, Spaces, datasets, tokenizers'},
-        {n:'29',t:'Transformers Library Deep Dive',u:'29_transformers_library',d:'AutoModel, Trainer, Pipeline internals'},
-        {n:'30',t:'Evaluation & Benchmarks',u:'30_evaluation_and_benchmarks',d:'MMLU, HumanEval, lm-eval-harness'},
-        {n:'31',t:'Serving & Deployment',u:'31_serving_and_deployment',d:'vLLM, TGI, TensorRT-LLM, Ollama'},
+      {name:'Ecosystem & Serving',chs:[
+        {n:'28',t:'The Hugging Face Ecosystem',u:'28_huggingface_ecosystem',d:'Hub, datasets, tokenizers, TRL'},
+        {n:'29',t:'transformers Internals',u:'29_transformers_library',d:'configs, auto classes, attention backends, caches'},
+        {n:'30',t:'Evaluation & Benchmarks',u:'30_evaluation_and_benchmarks',d:'2026 benchmarks, contamination, agentic evals'},
+        {n:'31',t:'Serving & Deployment',u:'31_serving_and_deployment',d:'vLLM, SGLang, TensorRT-LLM, llama.cpp; cost per token'},
       ]},
-      {name:'Advanced Topics',chs:[
-        {n:'32',t:'Scaling Laws & Emergent Abilities',u:'32_scaling_laws',d:'Kaplan, Chinchilla, emergence debate'},
-        {n:'33',t:'Mixture of Experts',u:'33_mixture_of_experts',d:'sparse routing, Mixtral, DeepSeek-MoE'},
-        {n:'34',t:'SSMs & Beyond Transformers',u:'34_ssms_and_alternatives',d:'Mamba, RWKV, Jamba'},
-        {n:'35',t:'Reasoning Models',u:'35_reasoning_models',d:'chain-of-thought, o1-style, test-time compute scaling'},
-        {n:'36',t:'Retrieval-Augmented Generation',u:'36_rag',d:'RAG pipeline, embedding models, vector databases'},
-        {n:'37',t:'Agents & Tool Use',u:'37_agents_and_tool_use',d:'function calling, coding agents, MCP protocol'},
-        {n:'38',t:'The Frontier',u:'38_frontier',d:'long context, world models, safety, interpretability'},
+      {name:'Scale & New Architectures',chs:[
+        {n:'32',t:'Scaling Laws',u:'32_scaling_laws',d:'Chinchilla and its refit, over-training'},
+        {n:'33',t:'Mixture of Experts',u:'33_mixture_of_experts',d:'routing, balancing, expert parallelism'},
+        {n:'34',t:'SSMs & Hybrids',u:'34_ssms_and_alternatives',d:'Mamba, the delta rule, the hybrid wave'},
+        {n:'↻',t:'Looped Transformers',u:'looped_transformers',d:'depth without parameters; adaptive exits'},
+      ]},
+      {name:'Reasoning, Retrieval & Agents',chs:[
+        {n:'35',t:'Reasoning Models',u:'35_reasoning_models',d:'RL-trained thinking, test-time compute'},
+        {n:'36',t:'Retrieval-Augmented Generation',u:'36_rag',d:'hybrid search, reranking, long context vs retrieval'},
+        {n:'37',t:'Agents & Tool Use',u:'37_agents_and_tool_use',d:'tool calling, MCP, coding and computer-use agents'},
+        {n:'38',t:'The Frontier',u:'38_frontier',d:'where the field stands in late 2026'},
       ]},
       {name:'Appendices',chs:[
-        {n:'A',t:'History of Language Modelling',u:'appendix_a_history',d:'Shannon → GPT-4 — every milestone and breakthrough'},
-        {n:'B',t:'Tokenization Deep Dive',u:'appendix_b_tokenization',d:'BPE, WordPiece, SentencePiece, training from scratch'},
-        {n:'C',t:'HuggingFace Config Reference',u:'appendix_c_model_config',d:'every config.json parameter explained'},
+        {n:'A',t:'History of Language Modelling',u:'appendix_a_history',d:'from Shannon to 2026'},
+        {n:'B',t:'Tokenization Deep Dive',u:'appendix_b_tokenization',d:'BPE, byte-level BPE, Unigram — with a trainer'},
+        {n:'C',t:'Model Config Reference',u:'appendix_c_model_config',d:'every field of a modern config.json'},
       ]},
     ]
   },
