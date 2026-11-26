@@ -190,7 +190,8 @@ main, footer.wrap { position: relative; z-index: 1; }
 .site-link { font-size: 14px; color: var(--text-2); text-decoration: none; white-space: nowrap; }
 .site-link:hover { color: var(--text); }
 
-.views { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; margin-bottom: 14px; }
+.cmp-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.views { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; }
 .views button { font: 500 13px var(--font-sans); color: var(--text-2); background: none; border: 0; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
 .views button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
 
@@ -207,7 +208,7 @@ main, footer.wrap { position: relative; z-index: 1; }
 .cmp-hint { font-size: 13px; color: var(--text-3); margin-top: 10px; }
 
 /* details */
-.details { margin-top: 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.details { margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
 .ver { border: 1px solid var(--rule); border-radius: 14px; padding: 18px 20px 20px; background: color-mix(in srgb, var(--surface) 88%, transparent); }
 .ver-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .ver-badge { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 14px var(--font-mono); background: var(--text); color: var(--bg); flex-shrink: 0; }
@@ -273,7 +274,7 @@ main, footer.wrap { position: relative; z-index: 1; }
 <main>
   <section class="hero wrap">
     <h1 class="hero-title">Evolution</h1>
-    <p class="hero-sub">Every guide here gets rebuilt from time to time. Drag the divider to see a version against the one before it &mdash; and below each pair, the model, the effort setting and the tokens that went into it.</p>
+    <p class="hero-sub">This site and the guides on it get rebuilt from time to time. Drag the divider to see one version against another &mdash; and below each pair, the model, the effort setting and the tokens that went into it.</p>
   </section>
 
   <div class="wrap" id="sites"></div>
@@ -297,10 +298,96 @@ main, footer.wrap { position: relative; z-index: 1; }
 /* ═══════════════════════════════════════════════════════════════════════
    DATA — one entry per guide, one object per version (oldest first).
    To record a new build: add screenshots to evolution/, append a version
-   object, and point `views` at the new images. `null` renders as
+   object, and add its image to each view under the version's tag.
+   `compare` picks the default pair (indexes into `versions`); with more
+   than two versions the reader can choose the pair. `null` renders as
    "not recorded".
    ═══════════════════════════════════════════════════════════════════════ */
 const SITES = [
+  {
+    "id": "home",
+    "name": "This site",
+    "color": "periwinkle",
+    "url": "https://karam-nus.github.io/",
+    "compare": [
+      0,
+      2
+    ],
+    "views": [
+      {
+        "label": "First screen",
+        "img": {
+          "A": "evolution/site-a-top.webp",
+          "B": "evolution/site-b-top.webp",
+          "C": "evolution/site-c-top.webp"
+        }
+      },
+      {
+        "label": "Further down",
+        "img": {
+          "A": "evolution/site-a-down.webp",
+          "B": "evolution/site-b-down.webp",
+          "C": "evolution/site-c-down.webp"
+        }
+      }
+    ],
+    "versions": [
+      {
+        "tag": "A",
+        "title": "Minimal dark",
+        "short": "May 2026",
+        "model": "Claude Opus 5",
+        "effort": "High",
+        "tool": "GitHub Copilot coding agent, in pull requests",
+        "dates": "19–23 May 2026",
+        "commits": "19",
+        "change": "first build: 3 files · 1,411 lines",
+        "tokens": null,
+        "notes": [
+          "Near-black page, monospace type, a red accent",
+          "One knowledge-base panel with tabs per guide and plain chapter lists",
+          "A light/beige toggle",
+          "A Three.js particle background was wired in, but it pointed at a file three.js no longer ships, so it never appeared"
+        ]
+      },
+      {
+        "tag": "B",
+        "title": "Tile redesign",
+        "short": "Aug 2026",
+        "model": null,
+        "effort": null,
+        "tool": null,
+        "dates": "1 August 2026",
+        "commits": "3",
+        "change": "2 files · +1,923 / −687 lines",
+        "tokens": null,
+        "notes": [
+          "“Let’s Learn!” script hero on a dotted paper grid",
+          "Colour-coded tiles per guide, each opening its own chapter index",
+          "Live and in-progress sections; light, sepia and dark themes",
+          "Built and deployed from its own branch — main kept the dark design until November"
+        ]
+      },
+      {
+        "tag": "C",
+        "title": "Current",
+        "short": "Nov 2026",
+        "model": "Claude Opus 5.5",
+        "effort": null,
+        "tool": "Claude Code",
+        "dates": "20–26 November 2026",
+        "commits": "6",
+        "change": "12 files · +1,384 / −195 lines",
+        "tokens": null,
+        "notes": [
+          "Tile redesign restored to main (its branch had been deleted)",
+          "Vectorization and Programming moved from In Progress to live; Object Detection added (13 → 16 live guides)",
+          "Language Modelling index updated to the guide’s November structure",
+          "This Evolution page, linked from the footer (26 November)"
+        ]
+      }
+    ]
+  },
   {
     "id": "language-modelling",
     "name": "Language Modelling",
@@ -309,13 +396,17 @@ const SITES = [
     "views": [
       {
         "label": "Home",
-        "a": "evolution/lm-home-a.webp",
-        "b": "evolution/lm-home-b.webp"
+        "img": {
+          "A": "evolution/lm-home-a.webp",
+          "B": "evolution/lm-home-b.webp"
+        }
       },
       {
         "label": "Chapter 5",
-        "a": "evolution/lm-ch-a.webp",
-        "b": "evolution/lm-ch-b.webp"
+        "img": {
+          "A": "evolution/lm-ch-a.webp",
+          "B": "evolution/lm-ch-b.webp"
+        }
       }
     ],
     "versions": [
@@ -347,7 +438,7 @@ const SITES = [
         "dates": "25–26 November 2026",
         "commits": "43",
         "change": "64 files · +11,678 / −6,304 lines",
-        "tokens": "0.87 M output · 165 M input (99% from the prompt cache)",
+        "tokens": "0.89 M output · 181 M input (99% from the prompt cache)",
         "notes": [
           "Every chapter and appendix audited and brought to November 2026",
           "\"Latent Press\" design: paper and night themes, residual-stream navigation, ⌘K search",
@@ -367,13 +458,17 @@ const SITES = [
     "views": [
       {
         "label": "Home",
-        "a": "evolution/chips-home-a.webp",
-        "b": "evolution/chips-home-b.webp"
+        "img": {
+          "A": "evolution/chips-home-a.webp",
+          "B": "evolution/chips-home-b.webp"
+        }
       },
       {
         "label": "Chapter 15",
-        "a": "evolution/chips-ch-a.webp",
-        "b": "evolution/chips-ch-b.webp"
+        "img": {
+          "A": "evolution/chips-ch-a.webp",
+          "B": "evolution/chips-ch-b.webp"
+        }
       }
     ],
     "versions": [
@@ -424,8 +519,8 @@ function compare(site, view, a, b) {
   const box = el('div', 'cmp');
   box.setAttribute('role', 'group');
   box.setAttribute('aria-label', site.name + ' — ' + view.label + ': version ' + a.tag + ' against version ' + b.tag);
-  const imgB = el('img', 'cmp-b'); imgB.src = view.b; imgB.alt = site.name + ', version ' + b.tag + ' (' + b.dates + '), ' + view.label.toLowerCase(); imgB.loading = 'lazy';
-  const imgA = el('img', 'cmp-a'); imgA.src = view.a; imgA.alt = site.name + ', version ' + a.tag + ' (' + a.dates + '), ' + view.label.toLowerCase(); imgA.loading = 'lazy';
+  const imgB = el('img', 'cmp-b'); imgB.src = view.img[b.tag]; imgB.alt = site.name + ', version ' + b.tag + ' (' + b.dates + '), ' + view.label.toLowerCase(); imgB.loading = 'lazy';
+  const imgA = el('img', 'cmp-a'); imgA.src = view.img[a.tag]; imgA.alt = site.name + ', version ' + a.tag + ' (' + a.dates + '), ' + view.label.toLowerCase(); imgA.loading = 'lazy';
   const range = el('input', 'cmp-range'); range.type = 'range'; range.min = 0; range.max = 100; range.value = 50;
   range.setAttribute('aria-label', 'Divider position: left shows version ' + a.tag + ', right shows version ' + b.tag);
   range.addEventListener('input', () => box.style.setProperty('--pos', range.value + '%'));
@@ -455,20 +550,36 @@ function renderSite(site) {
   const link = el('a', 'site-link', 'Open the current site ↗'); link.href = site.url; link.target = '_blank'; link.rel = 'noopener';
   head.append(link); sec.append(head);
 
-  const vs = site.versions, a = vs[vs.length - 2], b = vs[vs.length - 1];
+  const vs = site.versions, pair = site.compare || [vs.length - 2, vs.length - 1];
+  let a = vs[pair[0]], b = vs[pair[1]], view = site.views[0];
+  const stage = el('div'), hint = el('p', 'cmp-hint');
+  const draw = () => {
+    stage.replaceChildren(compare(site, view, a, b));
+    hint.textContent = 'Drag across the screenshot (or use the arrow keys) — left of the line is version ' + a.tag + ', right is version ' + b.tag + '.';
+  };
+  const bar = el('div', 'cmp-bar');
   const tabs = el('div', 'views'); tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Page to compare');
-  const stage = el('div');
-  site.views.forEach((view, i) => {
-    const btn = el('button', '', esc(view.label)); btn.type = 'button'; btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-    btn.addEventListener('click', () => {
-      tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false'));
-      btn.setAttribute('aria-pressed', 'true');
-      stage.replaceChildren(compare(site, view, a, b));
-    });
+  site.views.forEach((v, i) => {
+    const btn = el('button', '', esc(v.label)); btn.type = 'button'; btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    btn.addEventListener('click', () => { tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false')); btn.setAttribute('aria-pressed', 'true'); view = v; draw(); });
     tabs.append(btn);
   });
-  stage.append(compare(site, site.views[0], a, b));
-  sec.append(tabs, stage, el('p', 'cmp-hint', 'Drag across the screenshot (or use the arrow keys) — left of the line is version ' + esc(a.tag) + ', right is version ' + esc(b.tag) + '.'));
+  bar.append(tabs);
+  if (vs.length > 2) {                    // choose which two versions to compare
+    const pairs = el('div', 'views'); pairs.setAttribute('role', 'group'); pairs.setAttribute('aria-label', 'Versions to compare');
+    const options = [];
+    for (let i = 0; i < vs.length; i++) for (let j = i + 1; j < vs.length; j++) options.push([i, j]);
+    options.forEach(([i, j]) => {
+      const on = i === pair[0] && j === pair[1];
+      const btn = el('button', '', esc(vs[i].tag + ' → ' + vs[j].tag)); btn.type = 'button'; btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.title = vs[i].title + ' (' + vs[i].short + ') against ' + vs[j].title + ' (' + vs[j].short + ')';
+      btn.addEventListener('click', () => { pairs.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false')); btn.setAttribute('aria-pressed', 'true'); a = vs[i]; b = vs[j]; draw(); });
+      pairs.append(btn);
+    });
+    bar.append(pairs);
+  }
+  draw();
+  sec.append(bar, stage, hint);
 
   const grid = el('div', 'details');
   vs.forEach((v, i) => grid.append(details(site, v, i === vs.length - 1)));
